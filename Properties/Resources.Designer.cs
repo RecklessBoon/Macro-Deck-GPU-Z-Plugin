@@ -59,5 +59,15 @@ namespace RecklessBoon.MacroDeck.GPUZ.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Macro_Deck_GPU_Z_Icon {
+            get {
+                object obj = ResourceManager.GetObject("Macro_Deck_GPU_Z_Icon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }

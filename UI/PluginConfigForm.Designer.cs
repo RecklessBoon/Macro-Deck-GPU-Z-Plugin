@@ -65,7 +65,7 @@
             0,
             0});
             this.pollingFrequency.Name = "pollingFrequency";
-            this.pollingFrequency.Size = new System.Drawing.Size(120, 22);
+            this.pollingFrequency.Size = new System.Drawing.Size(110, 22);
             this.pollingFrequency.TabIndex = 16;
             this.pollingFrequency.Value = new decimal(new int[] {
             5,
@@ -81,9 +81,9 @@
             this.panel1.Controls.Add(this.pollingFrequency);
             this.panel1.Controls.Add(this.lblPollingFrequency);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(1, 30);
+            this.panel1.Location = new System.Drawing.Point(6, 30);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(266, 73);
+            this.panel1.Size = new System.Drawing.Size(256, 68);
             this.panel1.TabIndex = 2;
             // 
             // btn_OK
@@ -97,7 +97,7 @@
             this.btn_OK.ForeColor = System.Drawing.Color.White;
             this.btn_OK.HoverColor = System.Drawing.Color.Empty;
             this.btn_OK.Icon = null;
-            this.btn_OK.Location = new System.Drawing.Point(193, 38);
+            this.btn_OK.Location = new System.Drawing.Point(183, 38);
             this.btn_OK.Name = "btn_OK";
             this.btn_OK.Progress = 0;
             this.btn_OK.ProgressColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(103)))), ((int)(((byte)(225)))));
@@ -123,7 +123,7 @@
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.label1.ForeColor = System.Drawing.Color.DarkGray;
-            this.label1.Location = new System.Drawing.Point(4, 4);
+            this.label1.Location = new System.Drawing.Point(9, 4);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(205, 19);
             this.label1.TabIndex = 3;
@@ -138,7 +138,7 @@
             this.Controls.Add(this.panel1);
             this.Location = new System.Drawing.Point(0, 0);
             this.Name = "PluginConfigForm";
-            this.Padding = new System.Windows.Forms.Padding(1, 30, 1, 1);
+            this.Padding = new System.Windows.Forms.Padding(6, 30, 6, 6);
             this.Text = "PluginConfigForm";
             this.Controls.SetChildIndex(this.panel1, 0);
             this.Controls.SetChildIndex(this.label1, 0);

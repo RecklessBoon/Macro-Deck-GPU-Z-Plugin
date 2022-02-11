@@ -28,7 +28,7 @@ namespace RecklessBoon.MacroDeck.GPUZ
         public override string Description => "GPU-Z plugin";
 
         // You can add a image from your resources here
-        public override System.Drawing.Image Icon => null;
+        public override Image Icon => Properties.Resources.Macro_Deck_GPU_Z_Icon;
 
         // Optional; If your plugin can be configured, set to "true". It'll make the "Configure" button appear in the package manager.
         public override bool CanConfigure => true;
