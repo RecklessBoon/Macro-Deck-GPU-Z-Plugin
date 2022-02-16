@@ -78,6 +78,16 @@ namespace RecklessBoon.MacroDeck.GPUZ
             }
         }
 
+        public void DeleteVariable(string key)
+        {
+            DeleteVariable(key, "");
+        }
+
+        public void DeleteVariable(string key, string postfix)
+        {
+            VariableManager.DeleteVariable(String.Format("gpu_z_{0}{1}", GPUZPlugin.FormatName(key), postfix));
+        }
+
         public void RemoveVariables()
         {
             Task.Run(() =>
@@ -120,29 +130,38 @@ namespace RecklessBoon.MacroDeck.GPUZ
             PluginInstance.GPUZ.OnDataUpdated += (sender, record) =>
             {
                 var isWhitelisted = !String.IsNullOrWhiteSpace(PluginInstance.Configuration.VariableWhitelist.Find(x => x.Equals(record.key)));
-                if (isWhitelisted)
+                if (isWhitelisted && !String.IsNullOrWhiteSpace(record.value))
                 {
                     SetVariable(new VariableState { Name = record.key, Value = record.value, Type = VariableType.String });
                 }
                 else
                 {
-                    VariableManager.DeleteVariable(String.Format("gpu_z_{0}", GPUZPlugin.FormatName(record.key)));
+                    DeleteVariable(record.key);
                 }
             };
             PluginInstance.GPUZ.OnSensorUpdated += (sender, record) =>
             {
                 var isWhitelisted = !String.IsNullOrWhiteSpace(PluginInstance.Configuration.VariableWhitelist.Find(x => x.Equals(record.name)));
-                if (isWhitelisted)
+                if (isWhitelisted && !String.IsNullOrWhiteSpace(record.unit))
                 {
                     SetVariable(new VariableState { Name = record.name + "_unit", Value = record.unit, Type = VariableType.String });
-                    SetVariable(new VariableState { Name = record.name + "_digits", Value = (int)record.digits, Type = VariableType.Integer });
-                    SetVariable(new VariableState { Name = record.name + "_value", Value = (float)record.value, Type = VariableType.Float });
-                }
-                else
+                } else
                 {
-                    VariableManager.DeleteVariable(String.Format("gpu_z_{0}_unit", GPUZPlugin.FormatName(record.name)));
-                    VariableManager.DeleteVariable(String.Format("gpu_z_{0}_digits", GPUZPlugin.FormatName(record.name)));
-                    VariableManager.DeleteVariable(String.Format("gpu_z_{0}_value", GPUZPlugin.FormatName(record.name)));
+                    DeleteVariable(record.name, "_unit");
+                }
+                if (isWhitelisted && !String.IsNullOrWhiteSpace(record.digits.ToString()))
+                {
+                    SetVariable(new VariableState { Name = record.name + "_digits", Value = (int)record.digits, Type = VariableType.Integer });
+                } else
+                {
+                    DeleteVariable(record.name, "_digits");
+                }
+                if (isWhitelisted && !String.IsNullOrWhiteSpace(record.value.ToString()))
+                {
+                    SetVariable(new VariableState { Name = record.name + "_value", Value = (float)record.value, Type = VariableType.Float });
+                } else
+                {
+                    DeleteVariable(record.name, "_value");
                 }
             };
             PluginInstance.GPUZ.OnRefreshStarted += (sender, args) =>
