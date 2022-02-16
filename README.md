@@ -11,8 +11,8 @@ If you like my work and want to support/encourage me in making more plugins, you
 ## Features
 
 ### Variables
-At the time of this writing, this plugin updates the following variables for use anywhere variables are
-allowed in Macro Deck 2. I'll leave it to you to figure out what each can be used for.
+At the time of this writing, this plugin can update the following variables for use anywhere variables are
+allowed in Macro Deck 2. <b>They must be selected in the plugin configuration first!</b> I'll leave it to you to figure out what each can be used for.
 
 | Variable Name              | 
 | -------------------------- | 
@@ -55,22 +55,22 @@ allowed in Macro Deck 2. I'll leave it to you to figure out what each can be use
 | gpu_z_memsizefordisplay |
 | gpu_z_memtype |
 | gpu_z_memvendor |
-| gpu_z_monitor_1\aspectratio |
-| gpu_z_monitor_1\dpmssupport |
-| gpu_z_monitor_1\displaydiagonal |
-| gpu_z_monitor_1\displayheight |
-| gpu_z_monitor_1\displaywidth |
-| gpu_z_monitor_1\gamma |
-| gpu_z_monitor_1\hrefreshmax |
-| gpu_z_monitor_1\hrefreshmin |
-| gpu_z_monitor_1\manufactured |
-| gpu_z_monitor_1\maxresx |
-| gpu_z_monitor_1\maxresy |
-| gpu_z_monitor_1\model |
-| gpu_z_monitor_1\serial |
-| gpu_z_monitor_1\type |
-| gpu_z_monitor_1\vrefreshmax |
-| gpu_z_monitor_1\vrefreshmin |
+| gpu_z_monitor_1_aspectratio |
+| gpu_z_monitor_1_dpmssupport |
+| gpu_z_monitor_1_displaydiagonal |
+| gpu_z_monitor_1_displayheight |
+| gpu_z_monitor_1_displaywidth |
+| gpu_z_monitor_1_gamma |
+| gpu_z_monitor_1_hrefreshmax |
+| gpu_z_monitor_1_hrefreshmin |
+| gpu_z_monitor_1_manufactured |
+| gpu_z_monitor_1_maxresx |
+| gpu_z_monitor_1_maxresy |
+| gpu_z_monitor_1_model |
+| gpu_z_monitor_1_serial |
+| gpu_z_monitor_1_type |
+| gpu_z_monitor_1_vrefreshmax |
+| gpu_z_monitor_1_vrefreshmin |
 | gpu_z_monitorcount |
 | gpu_z_multigpu0 |
 | gpu_z_multigpuname |
@@ -115,9 +115,9 @@ allowed in Macro Deck 2. I'll leave it to you to figure out what each can be use
 | gpu_z_gpu_load_unit |
 | gpu_z_gpu_load_digits |
 | gpu_z_gpu_load_value |
-| gpu_z_memory_used_(dedicated)_unit |
-| gpu_z_memory_used_(dedicated)_digits |
-| gpu_z_memory_used_(dedicated)_value |
+| gpu_z_memory_used__dedicated__unit |
+| gpu_z_memory_used__dedicated__digits |
+| gpu_z_memory_used__dedicated__value |
 | gpu_z_cpu_temperature_unit |
 | gpu_z_cpu_temperature_digits |
 | gpu_z_cpu_temperature_value |
@@ -151,9 +151,13 @@ You can find more information on what it is and how to get it running here:<br/>
 2. Switch to the plugin manager view and locate the GPU-Z plugin
 3. Click the "Configure" button
 4. Set the polling frequency to whatever you like above 5 seconds
+5. Check the checkboxes for the data points you would like brought in as variables inside Macro Deck
 
 After that, you should be able to watch the `gpu_z_*` variables change after ever
 poll
+
+> <span style="background-color: yellow"> <b>Warning:</b></span> <i>Enabling all of the variables may impact performance of Macro Deck. You can, but it's best to 
+bring in only what you will be using.</i>
 
 ## Addendum
 
