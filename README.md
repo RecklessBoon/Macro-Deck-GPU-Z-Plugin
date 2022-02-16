@@ -12,7 +12,9 @@ If you like my work and want to support/encourage me in making more plugins, you
 
 ### Variables
 At the time of this writing, this plugin can update the following variables for use anywhere variables are
-allowed in Macro Deck 2. <b>They must be selected in the plugin configuration first!</b> I'll leave it to you to figure out what each can be used for.
+allowed in Macro Deck 2. I'll leave it to you to figure out what each can be used for.
+
+> <b>NOTE: They must be selected in the plugin configuration first!</b>
 
 | Variable Name              | 
 | -------------------------- | 
