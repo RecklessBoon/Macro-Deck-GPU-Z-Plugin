@@ -5,14 +5,12 @@ using SuchByte.MacroDeck.Plugins;
 using SuchByte.MacroDeck.Variables;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.IO.MemoryMappedFiles;
-using System.Runtime.InteropServices;
-using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace RecklessBoon.MacroDeck.GPUZ
 {
@@ -20,6 +18,7 @@ namespace RecklessBoon.MacroDeck.GPUZ
     {
         public static GPUZPlugin Plugin;
         public static Configuration Configuration;
+        public static SharedMemory GPUZ;
     }
 
     public class GPUZPlugin : MacroDeckPlugin
@@ -54,14 +53,20 @@ namespace RecklessBoon.MacroDeck.GPUZ
 
         }
 
+        public static string FormatName(string name)
+        {
+            return Regex.Replace(name, @"[^a-zA-Z0-9]", "_", RegexOptions.Multiline);
+        }
+
         public void SetVariable(VariableState variableState)
         {
-            VariableManager.SetValue(string.Format("gpu_z_{0}", variableState.Name), variableState.Value, variableState.Type, this, variableState.Save);
+            var formattedName = GPUZPlugin.FormatName(variableState.Name);
+            VariableManager.SetValue(string.Format("gpu_z_{0}", formattedName), variableState.Value, variableState.Type, this, variableState.Save);
         }
 
         public string GetVariable(string key)
         {
-            var name = String.Format("gpu_z_{0}", key);
+            var name = String.Format("gpu_z_{0}", GPUZPlugin.FormatName(key));
             return VariableManager.Variables.Find(x => x.Name == name).Value;
         }
 
@@ -73,34 +78,36 @@ namespace RecklessBoon.MacroDeck.GPUZ
             }
         }
 
-        public void ResetVariables()
+        public void RemoveVariables()
         {
             Task.Run(() =>
             {
-                var pluginVars = VariableManager.Variables.FindAll(x => x.Creator == "GPU_Z Plugin");
-                foreach(var variable in pluginVars)
+                VariableManager.Variables.FindAll(x => x.Creator == "GPU_Z Plugin").ForEach(delegate (Variable variable)
                 {
-                    VariableType type = Enum.Parse<VariableType>(variable.Type);
-                    switch (type)
+                    var isWhitelisted = !String.IsNullOrWhiteSpace(PluginInstance.Configuration.VariableWhitelist.Find((x) =>
                     {
-                        case VariableType.Integer:
-                        case VariableType.Float:
-                            VariableManager.SetValue(variable.Name, -1, type, this);
-                            break;
-                        case VariableType.String:
-                        default:
-                            VariableManager.SetValue(variable.Name, "", type, this);
-                            break;
+                        x = GPUZPlugin.FormatName(x).ToLower();
+                        string[] matches = new string[]
+                        {
+                            String.Format("gpu_z_{0}", x),
+                            String.Format("gpu_z_{0}_unit", x),
+                            String.Format("gpu_z_{0}_digits", x),
+                            String.Format("gpu_z_{0}_value", x)
+                        };
+                        return matches.Contains(variable.Name);
+                    }));
+                    if (!isWhitelisted)
+                    {
+                        VariableManager.DeleteVariable(variable.Name);
                     }
-
-                }
+                });
             });
         }
 
         public GPUZPlugin()
         {
             PluginInstance.Plugin ??= this;
-            PluginInstance.Configuration ??= new Configuration(this);
+
             cts = new CancellationTokenSource();
             cancellationToken = cts.Token;
         }
@@ -108,6 +115,41 @@ namespace RecklessBoon.MacroDeck.GPUZ
         // Gets called when the plugin is loaded
         public override void Enable()
         {
+            PluginInstance.Configuration ??= new Configuration(this);
+            PluginInstance.GPUZ ??= new SharedMemory();
+            PluginInstance.GPUZ.OnDataUpdated += (sender, record) =>
+            {
+                var isWhitelisted = !String.IsNullOrWhiteSpace(PluginInstance.Configuration.VariableWhitelist.Find(x => x.Equals(record.key)));
+                if (isWhitelisted)
+                {
+                    SetVariable(new VariableState { Name = record.key, Value = record.value, Type = VariableType.String });
+                }
+                else
+                {
+                    VariableManager.DeleteVariable(String.Format("gpu_z_{0}", GPUZPlugin.FormatName(record.key)));
+                }
+            };
+            PluginInstance.GPUZ.OnSensorUpdated += (sender, record) =>
+            {
+                var isWhitelisted = !String.IsNullOrWhiteSpace(PluginInstance.Configuration.VariableWhitelist.Find(x => x.Equals(record.name)));
+                if (isWhitelisted)
+                {
+                    SetVariable(new VariableState { Name = record.name + "_unit", Value = record.unit, Type = VariableType.String });
+                    SetVariable(new VariableState { Name = record.name + "_digits", Value = (int)record.digits, Type = VariableType.Integer });
+                    SetVariable(new VariableState { Name = record.name + "_value", Value = (float)record.value, Type = VariableType.Float });
+                }
+                else
+                {
+                    VariableManager.DeleteVariable(String.Format("gpu_z_{0}_unit", GPUZPlugin.FormatName(record.name)));
+                    VariableManager.DeleteVariable(String.Format("gpu_z_{0}_digits", GPUZPlugin.FormatName(record.name)));
+                    VariableManager.DeleteVariable(String.Format("gpu_z_{0}_value", GPUZPlugin.FormatName(record.name)));
+                }
+            };
+            PluginInstance.GPUZ.OnRefreshStarted += (sender, args) =>
+            {
+                RemoveVariables();
+            };
+
             BeginWatch();
 
             Actions = new List<PluginAction>()
@@ -135,71 +177,13 @@ namespace RecklessBoon.MacroDeck.GPUZ
                     {
                         try
                         {
-                            using var mmf = MemoryMappedFile.OpenExisting("GPUZShMem");
-                            using var accessor = mmf.CreateViewAccessor();
-
-                            int shMemSize = Marshal.SizeOf(typeof(GPUZ_SH_MEM));
-                            int recordSize = Marshal.SizeOf(typeof(GPUZ_RECORD));
-                            int recordArraySize = recordSize * 128;
-                            int sensorSize = Marshal.SizeOf(typeof(GPUZ_SENSOR_RECORD));
-                            int sensorArraySize = sensorSize * 128;
-
-                            GPUZ_SH_MEM mem;
-                            List<GPUZ_RECORD> data = new List<GPUZ_RECORD>();
-                            List<GPUZ_SENSOR_RECORD> sensors = new List<GPUZ_SENSOR_RECORD>();
-
-                            // Meta data
-                            accessor.Read(0, out mem);
-
-                            // System data
-                            for (var i = 0; i < recordArraySize; i += recordSize)
-                            {
-                                GPUZ_RECORD record;
-                                byte[] buffer = new byte[256];
-                                accessor.ReadArray<byte>(shMemSize + i, buffer, 0, 256);
-                                record.key = Encoding.Unicode.GetString(buffer).Trim('\0');
-                                buffer = new byte[256];
-                                accessor.ReadArray<byte>(shMemSize + i + 512, buffer, 0, 256);
-                                record.value = Encoding.Unicode.GetString(buffer).Trim('\0');
-
-                                SetVariable(new VariableState { Name = record.key, Value = record.value, Type = VariableType.String });
-
-                                data.Add(record);
-                            }
-
-                            // Sensor data
-                            for (var i = 0; i < sensorArraySize; i += sensorSize)
-                            {
-                                GPUZ_SENSOR_RECORD record;
-                                byte[] buffer = new byte[256];
-                                var position = shMemSize + recordArraySize + i;
-
-                                accessor.ReadArray<byte>(position, buffer, 0, 256);
-                                position += 512;
-                                record.name = Encoding.Unicode.GetString(buffer).Trim('\0');
-
-                                buffer = new byte[8];
-                                accessor.ReadArray<byte>(position, buffer, 0, 8);
-                                position += 16;
-                                record.unit = Encoding.Unicode.GetString(buffer).Trim('\0');
-
-                                record.digits = accessor.ReadUInt32(position);
-                                position += Marshal.SizeOf(typeof(UInt32));
-                                record.value = accessor.ReadDouble(position);
-
-                                SetVariable(new VariableState { Name = record.name + "_unit", Value = record.unit, Type = VariableType.String });
-                                SetVariable(new VariableState { Name = record.name + "_digits", Value = (int)record.digits, Type = VariableType.Integer });
-                                SetVariable(new VariableState { Name = record.name + "_value", Value = (float)record.value, Type = VariableType.Float });
-
-                                sensors.Add(record);
-                            }
-
-                            Thread.Sleep(PluginInstance.Configuration.PollingFrequency*1000);
+                            _ = PluginInstance.GPUZ.Refresh();
+                            Thread.Sleep(PluginInstance.Configuration.PollingFrequency * 1000);
                         }
                         catch (FileNotFoundException)
                         {
                             MacroDeckLogger.Info(PluginInstance.Plugin, "GPU-Z shared memory not available. Sleeping 30 seconds before trying again...");
-                            ResetVariables();
+                            RemoveVariables();
                             Thread.Sleep(30000);
                         }
                         catch (Exception ex)
@@ -207,7 +191,7 @@ namespace RecklessBoon.MacroDeck.GPUZ
                             MacroDeckLogger.Info(PluginInstance.Plugin,
                                                     String.Format("Failed to parse GPU-Z shared memory. Sleeping 60 seconds before trying again...\nException thrown: {0}",
                                                                   ex.ToString()));
-                            ResetVariables();
+                            RemoveVariables();
                             Thread.Sleep(60000);
                         }
                     }

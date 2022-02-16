@@ -2,6 +2,7 @@
 using SuchByte.MacroDeck.Plugins;
 using System;
 using SuchByte.MacroDeck.Logging;
+using System.Collections.Generic;
 
 namespace RecklessBoon.MacroDeck.GPUZ
 {
@@ -22,6 +23,13 @@ namespace RecklessBoon.MacroDeck.GPUZ
             {
                 _pollingFrequency = value;
             }
+        }
+
+        protected List<string> _variableWhitelist = new List<string>();
+        public List<string> VariableWhitelist
+        {
+            get { return _variableWhitelist; }
+            set { _variableWhitelist = value; }
         }
 
         public Configuration(GPUZPlugin plugin)
@@ -53,6 +61,7 @@ namespace RecklessBoon.MacroDeck.GPUZ
                 {
                     var config = JsonConvert.DeserializeObject<Configuration>(json);
                     PollingFrequency = config != null ? config.PollingFrequency : DEFAULT_POLLING_FREQUENCY;
+                    VariableWhitelist = config != null ? config.VariableWhitelist : new List<string>();
                 }
                 catch (Exception ex)
                 {

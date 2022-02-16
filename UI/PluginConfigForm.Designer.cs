@@ -32,6 +32,7 @@
             this.pollingFrequencyErrorProvider = new System.Windows.Forms.ErrorProvider(this.components);
             this.pollingFrequency = new System.Windows.Forms.NumericUpDown();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.variablesWhitelist = new System.Windows.Forms.ListView();
             this.btn_OK = new SuchByte.MacroDeck.GUI.CustomControls.ButtonPrimary();
             this.lblPollingFrequency = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
@@ -65,7 +66,7 @@
             0,
             0});
             this.pollingFrequency.Name = "pollingFrequency";
-            this.pollingFrequency.Size = new System.Drawing.Size(110, 22);
+            this.pollingFrequency.Size = new System.Drawing.Size(170, 22);
             this.pollingFrequency.TabIndex = 16;
             this.pollingFrequency.Value = new decimal(new int[] {
             5,
@@ -77,14 +78,31 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.Transparent;
+            this.panel1.Controls.Add(this.variablesWhitelist);
             this.panel1.Controls.Add(this.btn_OK);
             this.panel1.Controls.Add(this.pollingFrequency);
             this.panel1.Controls.Add(this.lblPollingFrequency);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(6, 30);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(256, 68);
+            this.panel1.Size = new System.Drawing.Size(316, 206);
             this.panel1.TabIndex = 2;
+            // 
+            // variablesWhitelist
+            // 
+            this.variablesWhitelist.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(45)))));
+            this.variablesWhitelist.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.variablesWhitelist.CheckBoxes = true;
+            this.variablesWhitelist.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.variablesWhitelist.ForeColor = System.Drawing.Color.White;
+            this.variablesWhitelist.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+            this.variablesWhitelist.HideSelection = false;
+            this.variablesWhitelist.Location = new System.Drawing.Point(3, 38);
+            this.variablesWhitelist.Name = "variablesWhitelist";
+            this.variablesWhitelist.Size = new System.Drawing.Size(310, 130);
+            this.variablesWhitelist.TabIndex = 18;
+            this.variablesWhitelist.UseCompatibleStateImageBehavior = false;
+            this.variablesWhitelist.View = System.Windows.Forms.View.List;
             // 
             // btn_OK
             // 
@@ -97,7 +115,7 @@
             this.btn_OK.ForeColor = System.Drawing.Color.White;
             this.btn_OK.HoverColor = System.Drawing.Color.Empty;
             this.btn_OK.Icon = null;
-            this.btn_OK.Location = new System.Drawing.Point(183, 38);
+            this.btn_OK.Location = new System.Drawing.Point(243, 174);
             this.btn_OK.Name = "btn_OK";
             this.btn_OK.Progress = 0;
             this.btn_OK.ProgressColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(103)))), ((int)(((byte)(225)))));
@@ -133,7 +151,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(268, 104);
+            this.ClientSize = new System.Drawing.Size(328, 242);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.panel1);
             this.Location = new System.Drawing.Point(0, 0);
@@ -158,5 +176,6 @@
         private System.Windows.Forms.Label lblPollingFrequency;
         private System.Windows.Forms.Label label1;
         private SuchByte.MacroDeck.GUI.CustomControls.ButtonPrimary btn_OK;
+        private System.Windows.Forms.ListView variablesWhitelist;
     }
 }
