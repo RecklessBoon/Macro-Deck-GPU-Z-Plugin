@@ -12,7 +12,9 @@ If you like my work and want to support/encourage me in making more plugins, you
 
 ### Variables
 At the time of this writing, this plugin can update the following variables for use anywhere variables are
-allowed in Macro Deck 2. <b>They must be selected in the plugin configuration first!</b> I'll leave it to you to figure out what each can be used for.
+allowed in Macro Deck 2. I'll leave it to you to figure out what each can be used for.
+
+> <b>NOTE: They must be selected in the plugin configuration first!</b>
 
 | Variable Name              | 
 | -------------------------- | 
@@ -162,7 +164,7 @@ bring in only what you will be using.</i>
 ## Addendum
 
 ### Not a Standalone App
-<img align="right" height="64px" src="https://macrodeck.org/images/works_with_macrodeck2.png" />
+<img align="right" height="96px" src="https://macrodeck.org/images/macro_deck_2_community_plugin.png" />
 
 This is a plugin for [Macro Deck 2](https://github.com/SuchByte/Macro-Deck), it does **NOT** function as a standalone app
 
