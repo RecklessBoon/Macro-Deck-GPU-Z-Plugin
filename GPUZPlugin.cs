@@ -36,6 +36,8 @@ namespace RecklessBoon.MacroDeck.GPUZ
 
         public Task grabbingInfoTask = null;
 
+        protected bool saveVarsInDB = true;
+
         public int GPUZ_PID = -1;
 
         public CancellationTokenSource cts;
@@ -127,12 +129,13 @@ namespace RecklessBoon.MacroDeck.GPUZ
         {
             PluginInstance.Configuration ??= new Configuration(this);
             PluginInstance.GPUZ ??= new SharedMemory();
+            var failureLogged = false;
             PluginInstance.GPUZ.OnDataUpdated += (sender, record) =>
             {
                 var isWhitelisted = !String.IsNullOrWhiteSpace(PluginInstance.Configuration.VariableWhitelist.Find(x => x.Equals(record.key)));
                 if (isWhitelisted && !String.IsNullOrWhiteSpace(record.value))
                 {
-                    SetVariable(new VariableState { Name = record.key, Value = record.value, Type = VariableType.String });
+                    SetVariable(new VariableState { Name = record.key, Value = record.value, Type = VariableType.String, Save = saveVarsInDB });
                 }
                 else
                 {
@@ -144,21 +147,21 @@ namespace RecklessBoon.MacroDeck.GPUZ
                 var isWhitelisted = !String.IsNullOrWhiteSpace(PluginInstance.Configuration.VariableWhitelist.Find(x => x.Equals(record.name)));
                 if (isWhitelisted && !String.IsNullOrWhiteSpace(record.unit))
                 {
-                    SetVariable(new VariableState { Name = record.name + "_unit", Value = record.unit, Type = VariableType.String });
+                    SetVariable(new VariableState { Name = record.name + "_unit", Value = record.unit, Type = VariableType.String, Save = saveVarsInDB });
                 } else
                 {
                     DeleteVariable(record.name, "_unit");
                 }
                 if (isWhitelisted && !String.IsNullOrWhiteSpace(record.digits.ToString()))
                 {
-                    SetVariable(new VariableState { Name = record.name + "_digits", Value = (int)record.digits, Type = VariableType.Integer });
+                    SetVariable(new VariableState { Name = record.name + "_digits", Value = (int)record.digits, Type = VariableType.Integer, Save = saveVarsInDB });
                 } else
                 {
                     DeleteVariable(record.name, "_digits");
                 }
                 if (isWhitelisted && !String.IsNullOrWhiteSpace(record.value.ToString()))
                 {
-                    SetVariable(new VariableState { Name = record.name + "_value", Value = (float)record.value, Type = VariableType.Float });
+                    SetVariable(new VariableState { Name = record.name + "_value", Value = (float)record.value, Type = VariableType.Float, Save = saveVarsInDB });
                 } else
                 {
                     DeleteVariable(record.name, "_value");
@@ -167,6 +170,20 @@ namespace RecklessBoon.MacroDeck.GPUZ
             PluginInstance.GPUZ.OnRefreshStarted += (sender, args) =>
             {
                 RemoveVariables();
+            };
+            PluginInstance.GPUZ.OnRefreshComplete += (sender, args) =>
+            {
+                saveVarsInDB = false;
+                failureLogged = false;
+            };
+            PluginInstance.GPUZ.OnMemoryReadFailed += (sender, failure) =>
+            {
+                if (!failureLogged)
+                {
+                    MacroDeckLogger.Warning(PluginInstance.Plugin, "GPU-Z shared memory file does not exist. Ensure the GPU-Z program is running to receive data.");
+                    failureLogged = true;
+                    saveVarsInDB = true;
+                }
             };
 
             BeginWatch();
@@ -198,12 +215,6 @@ namespace RecklessBoon.MacroDeck.GPUZ
                         {
                             _ = PluginInstance.GPUZ.Refresh();
                             Thread.Sleep(PluginInstance.Configuration.PollingFrequency * 1000);
-                        }
-                        catch (FileNotFoundException)
-                        {
-                            MacroDeckLogger.Info(PluginInstance.Plugin, "GPU-Z shared memory not available. Sleeping 30 seconds before trying again...");
-                            RemoveVariables();
-                            Thread.Sleep(30000);
                         }
                         catch (Exception ex)
                         {
@@ -256,6 +267,12 @@ namespace RecklessBoon.MacroDeck.GPUZ
             // Open your configuration form here
             using var configurator = new PluginConfigForm(PluginInstance.Configuration);
             configurator.ShowDialog();
+            configurator.FormClosed += Configurator_FormClosed;
+        }
+
+        private void Configurator_FormClosed(object sender, System.Windows.Forms.FormClosedEventArgs e)
+        {
+            saveVarsInDB = true;
         }
     }
 }
