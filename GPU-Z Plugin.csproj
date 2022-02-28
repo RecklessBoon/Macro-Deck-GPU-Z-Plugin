@@ -7,7 +7,7 @@
         <Version>1.0.3</Version>
         <RepositoryUrl>https://github.com/RecklessBoon/Macro-Deck-GPU-Z-Plugin</RepositoryUrl>
         <Authors>RecklessBoon</Authors>
-        <PackageId>GPU-Z Plugin</PackageId>
+        <PackageId>RecklessBoon.MacroDeck.GPUZ</PackageId>
         <AssemblyName>GPU_Z Plugin</AssemblyName>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
@@ -40,7 +40,7 @@
     </ItemGroup>
 
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-        <Exec Command="copy /Y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;%25AppData%25\Macro Deck\plugins\RecklessBoon.GPUZPlugin\$(TargetName).dll&quot;" />
+        <Exec Command="copy /Y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;%25AppData%25\Macro Deck\plugins\RecklessBoon.MacroDeck.GPUZ\$(TargetName).dll&quot;" />
     </Target>
 
 </Project>
