@@ -11,26 +11,34 @@ jobs:
     runs-on: windows-latest
     
     steps:     
-      - uses: actions/setup-dotnet@v1
+      # Install the .NET Core workload
+      - name: Install .NET Core
+        uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: '3.1.x' # SDK Version to use; x will use the latest version of the 3.1 channel
+          dotnet-version: 3.1.x
+
+      # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
+      - name: Setup MSBuild.exe
+        uses: microsoft/setup-msbuild@v1.0.2
         
       - uses: actions/checkout@v2
         with: 
           repository: SuchByte/Macro-Deck
           ref: refs/heads/main
           path: macro-deck
-      
-      - name: Build Solution
-        run: dotnet build -c Release
+          
+      # Restore the application to populate the obj folder with RuntimeIdentifiers
+      - name: Restore the application
+        run: msbuild /t:Restore /p:Configuration=Release
         working-directory: ./macro-deck
           
       - uses: actions/checkout@v2
         with: 
           path: plugin
 
-      - name: Build Solution
-        run: dotnet build -c Release
+      # Restore the application to populate the obj folder with RuntimeIdentifiers
+      - name: Restore the application
+        run: msbuild /t:Restore /p:Configuration=Release
         working-directory: ./plugin
               
   zip-files:
