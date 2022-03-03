@@ -41,14 +41,39 @@ jobs:
         run: msbuild /t:Restore /p:Configuration=Release
         working-directory: ./plugin
               
-  zip-files:
-    needs: build
-  
-    runs-on: ubuntu-latest
-    
-    steps:
-      - uses: actions/checkout@v2
-      - uses: papeloto/action-zip@v1
+      - name: Package into zip
+        uses: papeloto/action-zip@v1
         with:
-          files: obj/Release/netcoreapp3.1 Plugin.xml Icon.png README.md LICENSE
+          files: plugin/obj/Release/netcoreapp3.1 plugin/Plugin.xml plugin/Icon.png plugin/README.md plugin/LICENSE
           dest: RecklessBoon.MacroDeck.GPUZ.zip
+          
+      - name: Send mail
+        uses: dawidd6/action-send-mail@v3
+        with:
+          # Required mail server address:
+          server_address: smtp.gmail.com
+          # Required mail server port:
+          server_port: 465
+          # Required mail subject:
+          subject: Github Actions job result
+          # Required recipients' addresses:
+          to: recklessboon@gmail.com
+          # Required sender full name (address can be skipped):
+          from: RecklessBoon # <user@example.com>
+          # Optional whether this connection use TLS (default is true if server_port is 465)
+          secure: true
+          # Optional plain body:
+          body: Build job of ${{github.repository}} completed successfully!
+          # Optional HTML body read from file:
+          html_body: It worked
+          # Optional recipient of the email response:
+          reply_to: recklessboon@gmail.com
+          # Optional unsigned/invalid certificates allowance:
+          ignore_cert: true
+          # Optional converting Markdown to HTML (set content_type to text/html too):
+          convert_markdown: true
+          # Optional attachments:
+          attachments: ./RecklessBoon.MacroDeck.GPUZ.zip
+          # Optional priority: 'high', 'normal' (default) or 'low'
+          priority: low
+        
