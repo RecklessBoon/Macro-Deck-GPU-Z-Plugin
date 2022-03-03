@@ -21,21 +21,16 @@ jobs:
           path: macro-deck
       
       - name: Build Solution
-        working-directory: ./macro-deck
         run: dotnet build -c Release
-          
-      - name: Move dll into location
         working-directory: ./macro-deck
-        run: |
-          cp 'obj\Release\netcoreapp3.1\Macro Deck 2.dll' '$c\Program Files\Macro Deck\'
           
       - uses: actions/checkout@v2
         with: 
           path: plugin
 
       - name: Build Solution
-        working-directory: ./plugin
         run: dotnet build -c Release
+        working-directory: ./plugin
               
   zip-files:
     needs: build
