@@ -11,32 +11,30 @@ jobs:
     runs-on: windows-latest
     
     steps:     
-      - uses: actions/checkout@v2
-        with: 
-          path: plugin
-      
-      - uses: actions/checkout@v2
-        with: 
-          name: SuchByte/Macro-Deck
-          ref: refs/heads/master
-          path: macro-deck
-      
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v1
         
-      - name: Move into Macro Deck dir
-        run: cd $GITHUB_WORKSPACE/macro-deck
-
+      - uses: actions/checkout@v2
+        with: 
+          name: SuchByte/Macro-Deck
+          ref: refs/heads/main
+          path: macro-deck
+      
       - name: Build Solution
+        working-directory: ./macro-deck
         run: dotnet build -c Release
-        
+          
       - name: Move dll into location
-        run: cp '$GITHUB_WORKSPACE/macro-deck/obj/Release/netcoreapp3.1/Macro Deck 2.dll' '$c/Program Files/Macro Deck/'
-        
-      - name: Move into Macro Deck dir
-        run: cd $GITHUB_WORKSPACE/plugin
+        working-directory: ./macro-deck
+        run: |
+          cp 'obj\Release\netcoreapp3.1\Macro Deck 2.dll' '$c\Program Files\Macro Deck\'
+          
+      - uses: actions/checkout@v2
+        with: 
+          path: plugin
 
       - name: Build Solution
+        working-directory: ./plugin
         run: dotnet build -c Release
               
   zip-files:
