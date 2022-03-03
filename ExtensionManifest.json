@@ -1,0 +1,8 @@
+{
+  "name": "Discord Plugin",
+  "author": "RecklessBoon",
+  "repository": "https://github.com/RecklessBoon/Macro-Deck-GPU-Z-Plugin",
+  "packageId": "RecklessBoon.MacroDeck.GPUZ",
+  "version": "1.0.4",
+  "target-plugin-api-version": 31
+}
