@@ -43,13 +43,13 @@ jobs:
 
       # Restore the application to populate the obj folder with RuntimeIdentifiers
       - name: Restore the application
-        run: msbuild /t:Restore /p:Configuration=Release
+        run: msbuild /t:Restore /p:Configuration=Release /p:OutputPath=./dist
         working-directory: ./plugin
               
       - name: Package into zip
         uses: papeloto/action-zip@v1
         with:
-          files: plugin/obj/Release/netcoreapp3.1 plugin/Plugin.xml plugin/Icon.png plugin/README.md plugin/LICENSE
+          files: plugin/dist plugin/Plugin.xml plugin/Icon.png plugin/README.md plugin/LICENSE
           dest: RecklessBoon.MacroDeck.GPUZ.zip
           
       - name: Upload files to a GitHub release
