@@ -43,7 +43,7 @@ jobs:
 
       # Restore the application to populate the obj folder with RuntimeIdentifiers
       - name: Restore the application
-        run: msbuild /t:Restore /p:Configuration=Release /p:OutputPath=./dist
+        run: msbuild /t:Restore /p:Configuration=Release
         working-directory: ./plugin
               
       - name: Package into zip
