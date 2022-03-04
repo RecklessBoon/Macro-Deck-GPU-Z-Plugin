@@ -38,8 +38,11 @@ jobs:
         working-directory: ./macro-deck
         
       - name: Build the application
-        run: msbuild /t:rebuild /verbosity:diag /p:Configuration=Release;OutputPath=..\plugin\dist
+        run: msbuild /t:rebuild /verbosity:diag /p:Configuration=Release
         working-directory: ./macro-deck
+        
+      - name: Move Macro Deck 2 dll
+        run: mkdir ./plugin/lib; cp ./macro-deck/obj/Release/netcoreapp3.1/*.dll ./plugin/lib
           
       - uses: actions/checkout@v2
         with: 
