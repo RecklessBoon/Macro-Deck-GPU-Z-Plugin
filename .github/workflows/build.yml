@@ -34,11 +34,11 @@ jobs:
           
       # Restore the application to populate the obj folder with RuntimeIdentifiers
       - name: Restore the application
-        run: msbuild /t:Restore /p:Configuration=Release;OutputType=Library
+        run: msbuild /t:Restore /p:Configuration=Release
         working-directory: ./macro-deck
         
       - name: Build the application
-        run: msbuild -t:rebuild -verbosity:diag -property:Configuration=Release
+        run: msbuild /t:rebuild /verbosity:diag /p:Configuration=Release
         working-directory: ./macro-deck
           
       - uses: actions/checkout@v2
@@ -51,7 +51,7 @@ jobs:
         working-directory: ./plugin
         
       - name: Build the application
-        run: msbuild -t:rebuild -verbosity:diag -property:Configuration=Release
+        run: msbuild /t:rebuild /verbosity:diag /p:Configuration=Release
         working-directory: ./plugin
               
       - name: Package into zip
