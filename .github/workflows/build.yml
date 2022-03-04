@@ -28,9 +28,11 @@ jobs:
           path: macro-deck
           
       - name: Install dependencies
+        working-directory: ./macro-deck
         run: dotnet restore
         
       - name: Build
+        working-directory: ./macro-deck
         run: dotnet build --configuration Release --no-restore
           
       - uses: actions/checkout@v2
@@ -38,9 +40,11 @@ jobs:
           path: plugin
 
       - name: Install dependencies
+        working-directory: ./plugin
         run: dotnet restore
         
       - name: Build
+        working-directory: ./plugin
         run: dotnet build --configuration Release --no-restore
               
       - name: Package into zip
