@@ -49,7 +49,8 @@ jobs:
       - name: Package into zip
         uses: papeloto/action-zip@v1
         with:
-          files: plugin/dist plugin/Plugin.xml plugin/Icon.png plugin/README.md plugin/LICENSE
+          #files: plugin/dist plugin/Plugin.xml plugin/Icon.png plugin/README.md plugin/LICENSE
+          files: plugin
           dest: RecklessBoon.MacroDeck.GPUZ.zip
           
       - name: Upload files to a GitHub release
