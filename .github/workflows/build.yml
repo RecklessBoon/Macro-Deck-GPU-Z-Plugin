@@ -16,15 +16,10 @@ jobs:
     runs-on: windows-latest
     
     steps:     
-      # Install the .NET Core workload
-      - name: Install .NET Core
-        uses: actions/setup-dotnet@v1
+      - name: Setup .NET Core SDK 3.1.x
+        uses: actions/setup-dotnet@v1.7.2
         with:
           dotnet-version: 3.1.x
-
-      # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
-      - name: Setup MSBuild.exe
-        uses: microsoft/setup-msbuild@v1.0.2
         
       - uses: actions/checkout@v2
         with: 
@@ -32,19 +27,21 @@ jobs:
           ref: refs/heads/main
           path: macro-deck
           
-      # Restore the application to populate the obj folder with RuntimeIdentifiers
-      - name: Restore the application
-        run: msbuild /t:Restore /p:Configuration=Release;OutputType=Library
-        working-directory: ./macro-deck
+      - name: Install dependencies
+        run: dotnet restore
+        
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
           
       - uses: actions/checkout@v2
         with: 
           path: plugin
 
-      # Restore the application to populate the obj folder with RuntimeIdentifiers
-      - name: Restore the application
-        run: msbuild /t:Restore /p:Configuration=Release
-        working-directory: ./plugin
+      - name: Install dependencies
+        run: dotnet restore
+        
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
               
       - name: Package into zip
         uses: papeloto/action-zip@v1
