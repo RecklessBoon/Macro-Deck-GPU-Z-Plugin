@@ -38,7 +38,7 @@ jobs:
         working-directory: ./macro-deck
         
       - name: Build the application
-        run: msbuild /t:rebuild /verbosity:diag /p:Configuration=Release
+        run: msbuild /t:rebuild /verbosity:diag /p:Configuration=Release;OutputPath=..\plugin\dist
         working-directory: ./macro-deck
           
       - uses: actions/checkout@v2
