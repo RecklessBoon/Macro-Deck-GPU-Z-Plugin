@@ -38,6 +38,10 @@
         <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       </EmbeddedResource>
     </ItemGroup>
+     
+    <PropertyGroup> 
+      <MSBuildWarningsAsMessages>$(MSBuildWarningsAsMessages);NETSDK1107</MSBuildWarningsAsMessages>
+    </PropertyGroup>
 
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
         <Exec Command="copy /Y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;%25AppData%25\Macro Deck\plugins\RecklessBoon.MacroDeck.GPUZ\$(TargetName).dll&quot;" />
