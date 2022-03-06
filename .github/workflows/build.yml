@@ -37,7 +37,7 @@ jobs:
         
       - name: Build
         working-directory: ./macro-deck
-        run: dotnet msbuild --configuration Release --no-restore
+        run: msbuild -t:build -property:Configuration=Release
         
       - name: Move Macro Deck 2 dll
         run: mkdir 'C:\Program Files\Macro Deck'; cp ./macro-deck/obj/x64/Release/netcoreapp3.1/*.dll 'C:\Program Files\Macro Deck'
@@ -52,7 +52,7 @@ jobs:
         
       - name: Build
         working-directory: ./macro-deck
-        run: dotnet msbuild --configuration Release --no-restore
+        run: msbuild -t:build -property:Configuration=Release
               
       - name: Package into zip
         uses: papeloto/action-zip@v1
