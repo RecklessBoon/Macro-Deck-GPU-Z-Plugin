@@ -50,11 +50,11 @@ jobs:
       # Restore the application to populate the obj folder with RuntimeIdentifiers
       - name: Restore the application
         run: msbuild /t:Restore /p:Configuration=Release /p:RuntimeIdentifier=win-x64
-        working-directory: ./macro-deck
+        working-directory: ./plugin
         
       - name: Build the application
         run: msbuild /t:rebuild /p:Platform=x64 /p:Configuration=Release
-        working-directory: ./macro-deck
+        working-directory: ./plugin
               
       - name: Package into zip
         uses: papeloto/action-zip@v1
