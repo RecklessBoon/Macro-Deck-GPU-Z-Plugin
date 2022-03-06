@@ -31,13 +31,14 @@ jobs:
           ref: refs/heads/main
           path: macro-deck
           
-      - name: Install dependencies
+      # Restore the application to populate the obj folder with RuntimeIdentifiers
+      - name: Restore the application
+        run: msbuild /t:Restore /p:Configuration=Release /p:RuntimeIdentifier=win-x64
         working-directory: ./macro-deck
-        run: dotnet restore
         
-      - name: Build
+      - name: Build the application
+        run: msbuild /t:rebuild /p:Platform=x64 /p:Configuration=Release
         working-directory: ./macro-deck
-        run: msbuild -t:build -property:Configuration=Release
         
       - name: Move Macro Deck 2 dll
         run: mkdir 'C:\Program Files\Macro Deck'; cp ./macro-deck/obj/x64/Release/netcoreapp3.1/*.dll 'C:\Program Files\Macro Deck'
@@ -46,13 +47,14 @@ jobs:
         with: 
           path: plugin
 
-      - name: Install dependencies
+      # Restore the application to populate the obj folder with RuntimeIdentifiers
+      - name: Restore the application
+        run: msbuild /t:Restore /p:Configuration=Release /p:RuntimeIdentifier=win-x64
         working-directory: ./macro-deck
-        run: dotnet restore
         
-      - name: Build
+      - name: Build the application
+        run: msbuild /t:rebuild /p:Platform=x64 /p:Configuration=Release
         working-directory: ./macro-deck
-        run: msbuild -t:build -property:Configuration=Release
               
       - name: Package into zip
         uses: papeloto/action-zip@v1
