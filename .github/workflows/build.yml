@@ -43,7 +43,7 @@ jobs:
         working-directory: ./macro-deck
         
       - name: Build the application
-        run: msbuild /t:rebuild /p:Platform="Any CPU" /p:Configuration=Release /p:UseWpf=true /p:TargetFramework=netcoreapp3.1 /p:PostBuildEventUseInBuild=false /p:PreBuildEvent="" /p:PostBuildEvent=""
+        run: msbuild /t:rebuild /p:Platform="Any CPU" /p:Configuration=Release /p:UseWpf=true /p:TargetFramework=netcoreapp3.1 /p:PreBuildEvent="" /p:PostBuildEvent=""
         working-directory: ./macro-deck
         
       - name: Move Macro Deck 2 dll
@@ -59,7 +59,7 @@ jobs:
         working-directory: ./plugin
         
       - name: Build the application
-        run: msbuild /t:rebuild /p:Platform="Any CPU" /p:Configuration=Release /p:UseWpf=true /p:TargetFramework=netcoreapp3.1 /p:PostBuildEventUseInBuild=false /p:PreBuildEvent="" /p:PostBuildEvent=""
+        run: msbuild /t:rebuild /p:Platform="Any CPU" /p:Configuration=Release /p:UseWpf=true /p:TargetFramework=netcoreapp3.1 /p:PreBuildEvent="" /p:PostBuildEvent=""
         working-directory: ./plugin
               
       - name: Package into zip
