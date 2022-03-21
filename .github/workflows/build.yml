@@ -25,7 +25,7 @@ jobs:
         with:
           dotnet-version: 3.1.x
           
-              # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
+      # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
       - name: Setup MSBuild.exe
         uses: microsoft/setup-msbuild@v1.1
         
@@ -41,8 +41,7 @@ jobs:
         working-directory: ./macro-deck
         
       - name: Build the application
-        run: dotnet build
-        #run: msbuild /t:rebuild /p:Platform="Any CPU" /p:Configuration=Release /p:UseWpf=true /p:TargetFramework=netcoreapp3.1
+        run: msbuild /t:rebuild /p:Platform="Any CPU" /p:Configuration=Release /p:UseWpf=true /p:TargetFramework=netcoreapp3.1
         working-directory: ./macro-deck
         
       - name: Move Macro Deck 2 dll
@@ -58,8 +57,7 @@ jobs:
         working-directory: ./plugin
         
       - name: Build the application
-        run: dotnet build
-        #run: msbuild /t:rebuild /p:Platform="Any CPU" /p:Configuration=Release /p:UseWpf=true /p:TargetFramework=netcoreapp3.1
+        run: msbuild /t:rebuild /p:Platform="Any CPU" /p:Configuration=Release /p:UseWpf=true /p:TargetFramework=netcoreapp3.1
         working-directory: ./plugin
               
       - name: Package into zip
