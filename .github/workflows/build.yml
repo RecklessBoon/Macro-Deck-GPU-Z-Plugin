@@ -12,18 +12,22 @@ on:
         type: string
 
 jobs:
-  build:    
+  build:  
+    strategy:
+      matrix:
+        targetplatform: [x64]
+
     runs-on: windows-latest
     
-    steps:     
-      - name: Setup .NET Core SDK 3.1
-        uses: actions/setup-dotnet@v2.0.0
+    steps:  
+      - name: Install .NET Core
+        uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 3.1.x
-          
-              # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
+          dotnet-version: 3.1.100
+
+      # Add  MsBuild to the PATH: https://github.com/microsoft/setup-msbuild
       - name: Setup MSBuild.exe
-        uses: microsoft/setup-msbuild@v1.0.3
+        uses: microsoft/setup-msbuild@v1.0.0
         
       - uses: actions/checkout@v2
         with: 
@@ -37,7 +41,7 @@ jobs:
         working-directory: ./macro-deck
         
       - name: Build the application
-        run: msbuild /t:rebuild /p:Platform=x64 /p:Configuration=Release /p:UseWpf=true
+        run: msbuild /t:rebuild /p:Platform="Any CPU" /p:Configuration=Release /p:UseWpf=true
         working-directory: ./macro-deck
         
       - name: Move Macro Deck 2 dll
@@ -49,11 +53,11 @@ jobs:
 
       # Restore the application to populate the obj folder with RuntimeIdentifiers
       - name: Restore the application
-        run: msbuild /t:Restore /p:Configuration=Release /p:RuntimeIdentifier=win-x64 /p:UseWpf=true
+        run: msbuild /t:Restore /p:Configuration=Release /p:RuntimeIdentifier=win-x64
         working-directory: ./plugin
         
       - name: Build the application
-        run: msbuild /t:rebuild /p:Platform=x64 /p:Configuration=Release
+        run: msbuild /t:rebuild /p:Platform="Any CPU" /p:Configuration=Release /p:UseWpf=true
         working-directory: ./plugin
               
       - name: Package into zip
