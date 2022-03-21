@@ -45,7 +45,7 @@ jobs:
         working-directory: ./macro-deck
         
       - name: Move Macro Deck 2 dll
-        run: mkdir 'C:\Program Files\Macro Deck'; cp ./macro-deck/obj/x64/Release/netcoreapp3.1/*.dll 'C:\Program Files\Macro Deck'
+        run: mkdir 'C:\Program Files\Macro Deck'; cp ./macro-deck/obj/Any CPU/Release/netcoreapp3.1/*.dll 'C:\Program Files\Macro Deck'
           
       - uses: actions/checkout@v2
         with: 
