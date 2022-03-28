@@ -58,11 +58,11 @@ jobs:
         run: msbuild /t:Restore /p:Configuration=Release /p:RuntimeIdentifier=win-x64
         working-directory: ./plugin
         
-      - name: Move Macro Deck 2 dll
-        run: echo '<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003"><Target Name="PostBuildEvent"/><Target Name="PreBuildEvent" /></Project>' > suppress_build.proj
+      - name: Create Build Event Suppression File
+        run: "\"<Project xmlns=\\\"http://schemas.microsoft.com/developer/msbuild/2003\\\"><Target Name=\\\"PostBuildEvent\\\"/><Target Name=\\\"PreBuildEvent\\\" /></Project\" | Out-File -FilePath suppress_build.proj"
         
       - name: Build the application
-        run: msbuild /t:rebuild /p:Platform="Any CPU" /p:Configuration=Release /p:UseWpf=true /p:TargetFramework=netcoreapp3.1 /p:CustomAfterMicrosoftCommonTargets=../suppres_build.proj
+        run: msbuild /t:rebuild /p:Platform="Any CPU" /p:Configuration=Release /p:UseWpf=true /p:TargetFramework=netcoreapp3.1 /p:CustomAfterMicrosoftCommonTargets="../suppres_build.proj"
         working-directory: ./plugin
               
       - name: Package into zip
