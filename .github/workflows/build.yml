@@ -59,7 +59,7 @@ jobs:
         working-directory: ./plugin
         
       - name: Create Build Event Suppression File
-        run: "\"<Project xmlns=\\\"http://schemas.microsoft.com/developer/msbuild/2003\\\"><Target Name=\\\"PostBuildEvent\\\"/><Target Name=\\\"PreBuildEvent\\\" /></Project\" | Out-File -FilePath suppress_build.proj"
+        run: echo "<Project xmlns=""http://schemas.microsoft.com/developer/msbuild/2003""><Target Name=""PostBuildEvent""/><Target Name=""PreBuildEvent"" /></Project>" | Out-File -FilePath suppress_build.proj
         
       - name: Build the application
         run: msbuild /t:rebuild /p:Platform="Any CPU" /p:Configuration=Release /p:UseWpf=true /p:TargetFramework=netcoreapp3.1 /p:CustomAfterMicrosoftCommonTargets="../suppres_build.proj"
