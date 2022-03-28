@@ -59,13 +59,10 @@ jobs:
         working-directory: ./plugin
         
       - name: Move Macro Deck 2 dll
-        run: |
-          mkdir "%AppData%\Macro Deck"
-          mkdir "%AppData%\Macro Deck\plugins"
-          mkdir "%AppData%\Macro Deck\plugins\RecklessBoon.MacroDeck.GPUZ"
+        run: echo '<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003"><Target Name="PostBuildEvent"/><Target Name="PreBuildEvent" /></Project>' > suppress_build.proj
         
       - name: Build the application
-        run: msbuild /t:rebuild /p:Platform="Any CPU" /p:Configuration=Release /p:UseWpf=true /p:TargetFramework=netcoreapp3.1 /p:PostBuildEvent=
+        run: msbuild /t:rebuild /p:Platform="Any CPU" /p:Configuration=Release /p:UseWpf=true /p:TargetFramework=netcoreapp3.1 /p:CustomAfterMicrosoftCommonTargets=../suppres_build.proj
         working-directory: ./plugin
               
       - name: Package into zip
