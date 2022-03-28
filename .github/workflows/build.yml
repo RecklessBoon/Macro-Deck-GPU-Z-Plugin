@@ -59,7 +59,7 @@ jobs:
         working-directory: ./plugin
         
       - name: Build the application
-        run: msbuild /t:rebuild /p:Platform="Any CPU" /p:Configuration=Release /p:UseWpf=true /p:TargetFramework=netcoreapp3.1 /p:PostBuildEvent=
+        run: msbuild -t:rebuild -p:Platform="Any CPU" -p:Configuration=Release -p:UseWpf=true -p:TargetFramework=netcoreapp3.1 -p:PostBuildEvent=
         working-directory: ./plugin
               
       - name: Package into zip
