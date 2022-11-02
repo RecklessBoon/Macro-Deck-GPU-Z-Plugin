@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFramework>net6.0-windows10.0.22000.0</TargetFramework>
         <RootNamespace>RecklessBoon.MacroDeck.GPUZ</RootNamespace>
         <UseWindowsForms>true</UseWindowsForms>
-        <Version>1.0.5</Version>
+        <Version>2.0.0</Version>
         <RepositoryUrl>https://github.com/RecklessBoon/Macro-Deck-GPU-Z-Plugin</RepositoryUrl>
         <Authors>RecklessBoon</Authors>
         <PackageId>RecklessBoon.MacroDeck.GPUZ</PackageId>
@@ -14,14 +14,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
-        <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <Reference Include="Macro Deck 2">
-            <HintPath>C:\Program Files\Macro Deck\Macro Deck 2.dll</HintPath>
-        </Reference>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+        <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
     </ItemGroup>
 
     <ItemGroup>
@@ -39,8 +33,15 @@
       </EmbeddedResource>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\Macro-Deck\MacroDeck\MacroDeck.csproj" />
+    </ItemGroup>
+
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-        <Exec Command="copy /Y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;%25AppData%25\Macro Deck\plugins\RecklessBoon.MacroDeck.GPUZ\$(TargetName).dll&quot;" />
+        <Exec Command="if not exist &quot;$(SolutionDir)..\Macro-Deck\MacroDeck\bin\$(ConfigurationName)\$(TargetFramework)\win-x64\Data\plugins\$(PackageId)&quot; mkdir &quot;$(SolutionDir)..\Macro-Deck\MacroDeck\bin\$(ConfigurationName)\$(TargetFramework)\win-x64\Data\plugins\$(PackageId)&quot;" />
+        <Exec Command="copy /Y &quot;$(ProjectDir)ExtensionManifest.json&quot; &quot;$(SolutionDir)..\Macro-Deck\MacroDeck\bin\$(ConfigurationName)\$(TargetFramework)\win-x64\Data\plugins\$(PackageId)\ExtensionManifest.json&quot;" />
+        <Exec Command="copy /Y &quot;$(ProjectDir)ExtensionIcon.png&quot; &quot;$(SolutionDir)..\Macro-Deck\MacroDeck\bin\$(ConfigurationName)\$(TargetFramework)\win-x64\Data\plugins\$(PackageId)\ExtensionIcon.png&quot;" />
+        <Exec Command="copy /Y &quot;$(TargetDir)*.dll&quot; &quot;$(SolutionDir)..\Macro-Deck\MacroDeck\bin\$(ConfigurationName)\$(TargetFramework)\win-x64\Data\plugins\$(PackageId)\&quot;" />
     </Target>
 
 </Project>

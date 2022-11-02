@@ -57,21 +57,7 @@ namespace RecklessBoon.MacroDeck.GPUZ
         public void SetVariable(VariableState variableState)
         {
             var formattedName = GPUZPlugin.FormatName(variableState.Name);
-            VariableManager.SetValue(string.Format("gpu_z_{0}", formattedName), variableState.Value, variableState.Type, this, variableState.Save);
-        }
-
-        public string GetVariable(string key)
-        {
-            var name = String.Format("gpu_z_{0}", GPUZPlugin.FormatName(key));
-            return VariableManager.Variables.Find(x => x.Name == name).Value;
-        }
-
-        public void SetVariable(VariableState[] variableStates)
-        {
-            foreach (VariableState state in variableStates)
-            {
-                SetVariable(state);
-            }
+            VariableManager.SetValue(string.Format("gpu_z_{0}", formattedName), variableState.Value, variableState.Type, this);
         }
 
         public void DeleteVariable(string key)
@@ -88,9 +74,9 @@ namespace RecklessBoon.MacroDeck.GPUZ
         {
             Task.Run(() =>
             {
-                VariableManager.Variables.FindAll(x => x.Creator == "GPU_Z Plugin").ForEach(delegate (Variable variable)
+                foreach(Variable variable in VariableManager.Variables.Where(x => x.Creator == "GPU_Z Plugin"))
                 {
-                    var isWhitelisted = !String.IsNullOrWhiteSpace(PluginInstance.Configuration.VariableWhitelist.Find((x) =>
+                    var isWhitelisted = PluginInstance.Configuration.VariableWhitelist.FirstOrDefault((x) =>
                     {
                         x = GPUZPlugin.FormatName(x).ToLower();
                         string[] matches = new string[]
@@ -101,12 +87,12 @@ namespace RecklessBoon.MacroDeck.GPUZ
                             String.Format("gpu_z_{0}_value", x)
                         };
                         return matches.Contains(variable.Name);
-                    }));
+                    }) != default;
                     if (!isWhitelisted)
                     {
                         VariableManager.DeleteVariable(variable.Name);
                     }
-                });
+                }
             });
         }
 
@@ -126,39 +112,26 @@ namespace RecklessBoon.MacroDeck.GPUZ
             var failureLogged = false;
             PluginInstance.GPUZ.OnDataUpdated += (sender, record) =>
             {
-                var isWhitelisted = !String.IsNullOrWhiteSpace(PluginInstance.Configuration.VariableWhitelist.Find(x => x.Equals(record.key)));
-                if (isWhitelisted && !String.IsNullOrWhiteSpace(record.value))
+                var isWhitelisted = PluginInstance.Configuration.VariableWhitelist.FirstOrDefault(x => x.Equals(record.key)) != default;
+                if (isWhitelisted && !string.IsNullOrWhiteSpace(record.value))
                 {
                     SetVariable(new VariableState { Name = record.key, Value = record.value, Type = VariableType.String, Save = saveVarsInDB });
-                }
-                else
-                {
-                    DeleteVariable(record.key);
                 }
             };
             PluginInstance.GPUZ.OnSensorUpdated += (sender, record) =>
             {
-                var isWhitelisted = !String.IsNullOrWhiteSpace(PluginInstance.Configuration.VariableWhitelist.Find(x => x.Equals(record.name)));
-                if (isWhitelisted && !String.IsNullOrWhiteSpace(record.unit))
+                var isWhitelisted = PluginInstance.Configuration.VariableWhitelist.FirstOrDefault(x => x.Equals(record.name)) != default;
+                if (isWhitelisted && !string.IsNullOrWhiteSpace(record.unit))
                 {
                     SetVariable(new VariableState { Name = record.name + "_unit", Value = record.unit, Type = VariableType.String, Save = saveVarsInDB });
-                } else
-                {
-                    DeleteVariable(record.name, "_unit");
                 }
-                if (isWhitelisted && !String.IsNullOrWhiteSpace(record.digits.ToString()))
+                if (isWhitelisted && !string.IsNullOrWhiteSpace(record.digits.ToString()))
                 {
                     SetVariable(new VariableState { Name = record.name + "_digits", Value = (int)record.digits, Type = VariableType.Integer, Save = saveVarsInDB });
-                } else
-                {
-                    DeleteVariable(record.name, "_digits");
                 }
-                if (isWhitelisted && !String.IsNullOrWhiteSpace(record.value.ToString()))
+                if (isWhitelisted && !string.IsNullOrWhiteSpace(record.value.ToString()))
                 {
                     SetVariable(new VariableState { Name = record.name + "_value", Value = (float)record.value, Type = VariableType.Float, Save = saveVarsInDB });
-                } else
-                {
-                    DeleteVariable(record.name, "_value");
                 }
             };
             PluginInstance.GPUZ.OnRefreshStarted += (sender, args) =>
