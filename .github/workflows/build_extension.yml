@@ -20,6 +20,9 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 6.0.x
+        
+    - name: Install XMLStarlet
+      run: apt-get install -y xmlstarlet
     
     - uses: actions/checkout@v3
       with: 
@@ -28,14 +31,10 @@ jobs:
         path: macro-deck
         
     - name: Remove Pre Build Targets
-      uses: Mudlet/xmlstarlet-action@master
-      with:
-        args: ed -P -L --delete '//Target[@Name="PreBuild"]' ./macro-deck/*.csproj
-        
-    - name: Remove Post Build Targets
-      uses: Mudlet/xmlstarlet-action@master
-      with:
-        args: ed -P -L --delete '//Target[@Name="PostBuild"]' ./macro-deck/*.csproj
+      working-directory: ./macro-deck
+      run : |
+        xmlstarlet ed -P -L --delete '//Target[@Name="PreBuild"]' ./macro-deck/*.csproj
+        xmlstarlet ed -P -L --delete '//Target[@Name="PostBuild"]' ./macro-deck/*.csproj
         
     - name: Check CSPROJ
       working-directory: ./macro-deck
