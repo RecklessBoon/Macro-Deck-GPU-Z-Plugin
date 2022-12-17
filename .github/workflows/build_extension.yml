@@ -30,7 +30,7 @@ jobs:
     - name: Remove Pre/Post Build Targets
       uses: Mudlet/xmlstarlet-action@master
       with:
-        args: ed -P -L --delete //Target[@AfterTargets="PostBuildEvent"] --delete //Target[@BeforeTargets="PreBuildEvent"] ./macro-deck/*.csproj
+        args: ed -P -L --delete '//Target[@AfterTargets="PostBuildEvent"]' --delete '//Target[@BeforeTargets="PreBuildEvent"]' ./macro-deck/*.csproj
         
     - name: Remove COM Reference
       working-directory: ./macro-deck
@@ -55,17 +55,12 @@ jobs:
     - name: Remove Pre/Post Build Targets
       uses: Mudlet/xmlstarlet-action@master
       with:
-        args: ed -P -L --delete //Target[@AfterTargets="PostBuildEvent"] --delete //Target[@BeforeTargets="PreBuildEvent"] ./plugin/*.csproj
+        args: ed -P -L --delete '//Target[@AfterTargets="PostBuildEvent"]' --delete '//Target[@BeforeTargets="PreBuildEvent"]' ./plugin/*.csproj
       
     - name: Move dll into location
       working-directory: ./macro-deck
       run: |
         cp 'obj\Release\netcoreapp3.1\Macro Deck 2.dll' '../plugin/Macro Deck 2.dll'
-        
-    - name: Enable Windows Targeting
-      uses: Mudlet/xmlstarlet-action@2459d21dc77b093ef78e3c3f8bfd256e2c2c2b73
-      with:
-        args: ed -P --delete //Project/PostBuild --delete //Project/PreBuild ./plugin/*.csproj
       
     - name: Restore dependencies
       working-directory: ./plugin
