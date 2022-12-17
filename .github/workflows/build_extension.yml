@@ -34,7 +34,7 @@ jobs:
         
     - name: Remove COM Reference
       working-directory: ./macro-deck
-      run: dotnet remove NetFwTypeLib
+      run: dotnet remove reference NetFwTypeLib
         
     - name: Restore dependencies
       working-directory: ./macro-deck
