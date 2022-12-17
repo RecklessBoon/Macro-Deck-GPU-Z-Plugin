@@ -13,7 +13,7 @@ on:
 jobs:
   build:
   
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
     - name: Setup .NET
@@ -27,33 +27,20 @@ jobs:
         ref: refs/heads/main
         path: macro-deck
     
-    - name: Remove Pre/Post Build
-      shell: pwsh
-      run: |
-        $file = dir .\macro-deck\*.csproj
-        $xml = [xml](Get-Content $file)
-        $postBuild = $xml.SelectSingleNode("//Project/PostBuild")
-        if ($postBuild) { 
-          $postBuild.ParentNode.RemoveChild($postBuild) | Out-Null
-        }
-        $preBuild = $xml.SelectSingleNode("//Project/PreBuild")
-        if ($preBuild) {
-          $preBuild.ParentNode.RemoveChild($preBuild) | Out-Null
-        }
-        $xml.Save('.\macro-deck\'+$file.BaseName+'.csproj')
-
+    - name: Enable Windows Targeting
+      uses: Mudlet/xmlstarlet-action@2459d21dc77b093ef78e3c3f8bfd256e2c2c2b73
+      with:
+        args: ed -P --delete //Project/PostBuild --delete //Project/PreBuild ./macro-deck/*.csproj
     - name: Restore dependencies
       working-directory: ./macro-deck
-      run: dotnet restore
-
+      run: dotnet restore -property:EnableWindowsTargeting=true
     - name: Build
       working-directory: ./macro-deck
-      run: dotnet build --no-restore -property:SignAssembly=false
+      run: dotnet build --no-restore -property:EnableWindowsTargeting=true -property:SignAssembly=false
   
     - name: Test
       working-directory: ./macro-deck
       run: dotnet test --no-build --verbosity normal
-
     - uses: actions/checkout@v3
       with: 
         path: plugin
