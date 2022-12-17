@@ -33,8 +33,8 @@ jobs:
     - name: Remove Pre Build Targets
       working-directory: ./macro-deck
       run : |
-        xmlstarlet ed -P -L --delete '//Target[@Name="PreBuild"]' ./macro-deck/*.csproj
-        xmlstarlet ed -P -L --delete '//Target[@Name="PostBuild"]' ./macro-deck/*.csproj
+        xmlstarlet ed -P -L --delete '//Target[@Name="PreBuild"]' *.csproj
+        xmlstarlet ed -P -L --delete '//Target[@Name="PostBuild"]' *.csproj
         
     - name: Check CSPROJ
       working-directory: ./macro-deck
@@ -61,14 +61,10 @@ jobs:
         path: plugin
       
     - name: Remove Pre Build Targets
-      uses: Mudlet/xmlstarlet-action@master
-      with:
-        args: ed -P -L --delete '//Target[@Name="PreBuild"]' ./plugin/*.csproj
-        
-    - name: Remove Post Build Targets
-      uses: Mudlet/xmlstarlet-action@master
-      with:
-        args: ed -P -L --delete '//Target[@Name="PostBuild"]' ./plugin/*.csproj
+      working-directory: ./plugin
+      run : |
+        xmlstarlet ed -P -L --delete '//Target[@Name="PreBuild"]' *.csproj
+        xmlstarlet ed -P -L --delete '//Target[@Name="PostBuild"]' *.csproj
       
     - name: Move dll into location
       working-directory: ./macro-deck
