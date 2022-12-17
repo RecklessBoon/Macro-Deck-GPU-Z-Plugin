@@ -20,16 +20,17 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 6.0.x
-        
-    - name: Create Pre/Post Build Override
-      run: |
-        echo '<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003"><Target Name="PostBuildEvent"/><Target Name="PreBuildEvent" /></Project>' > SupressBuildEvents.csproj
     
     - uses: actions/checkout@v3
       with: 
         repository: SuchByte/Macro-Deck
         ref: refs/heads/main
         path: macro-deck
+        
+    - name: Remove Pre/Post Build Targets
+      uses: Mudlet/xmlstarlet-action@master
+      with:
+        args: ed -P -L --delete //Target[@Name="PostBuild"] --delete //Target[@Name="PreBuild"] ./macro-deck/*.csproj
         
     - name: Remove COM Reference
       working-directory: ./macro-deck
@@ -41,15 +42,21 @@ jobs:
       
     - name: Build
       working-directory: ./macro-deck
-      run: dotnet build --no-restore -property:EnableWindowsTargeting=true -property:SignAssembly=false -property:CustomAfterMicrosoftCommonTargets=../SupressBuildEvents.proj
+      run: dotnet build --no-restore -property:EnableWindowsTargeting=true -property:SignAssembly=false
   
     - name: Test
       working-directory: ./macro-deck
       run: dotnet test --no-build --verbosity normal
+      
     - uses: actions/checkout@v3
       with: 
         path: plugin
-        
+      
+    - name: Remove Pre/Post Build Targets
+      uses: Mudlet/xmlstarlet-action@master
+      with:
+        args: ed -P -L --delete //Target[@Name="PostBuild"] --delete //Target[@Name="PreBuild"] ./plugin/*.csproj
+      
     - name: Move dll into location
       working-directory: ./macro-deck
       run: |
@@ -66,8 +73,8 @@ jobs:
     
     - name: Build
       working-directory: ./plugin
-      run: dotnet build --no-restore /p:EnableWindowsTargeting=true -property:CustomAfterMicrosoftCommonTargets=../SupressBuildEvents.proj
-    
+      run: dotnet build --no-restore /p:EnableWindowsTargeting=true
+      
     - name: Test
       working-directory: ./plugin
       run: dotnet test --no-build --verbosity normal
