@@ -32,10 +32,14 @@ jobs:
       run: |
         $file = dir .\macro-deck\*.csproj
         $xml = [xml](Get-Content $file)
-        $node = $xml.SelectSingleNode("//Project/PostBuild")
-        $node.ParentNode.RemoveChild($node) | Out-Null
-        $node = $xml.SelectSingleNode("//Project/PreBuild")
-        $node.ParentNode.RemoveChild($node) | Out-Null
+        $postBuild = $xml.SelectSingleNode("//Project/PostBuild")
+        if ($postBuild) { 
+          $postBuild.ParentNode.RemoveChild($postBuild) | Out-Null
+        }
+        $preBuild = $xml.SelectSingleNode("//Project/PreBuild")
+        if ($preBuild) {
+          $preBuild.ParentNode.RemoveChild($preBuild) | Out-Null
+        }
         $xml.Save('.\macro-deck\'+$file.BaseName+'.csproj')
 
     - name: Restore dependencies
