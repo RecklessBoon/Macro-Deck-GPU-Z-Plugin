@@ -69,7 +69,7 @@ jobs:
     - name: Move dll into location
       working-directory: ./macro-deck
       run: |
-        cp './bin/Release/*/Macro Deck 2.dll' '../plugin/Macro Deck 2.dll'
+        cp './bin/Release/netcoreapp3.1/Macro Deck 2.dll' '../plugin/Macro Deck 2.dll'
       
     - name: Restore dependencies
       working-directory: ./plugin
