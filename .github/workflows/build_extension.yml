@@ -34,7 +34,7 @@ jobs:
 
     - name: Restore dependencies
       working-directory: ./macro-deck
-      run: dotnet restore /p:EnableWindowsTargeting=true /p:SignAssembly=false
+      run: dotnet restore -p:EnableWindowsTargeting=true -p:SignAssembly=false
 
     - name: Build
       working-directory: ./macro-deck
