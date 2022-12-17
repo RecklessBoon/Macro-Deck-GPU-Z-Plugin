@@ -20,6 +20,10 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 6.0.x
+        
+    - name: Create Pre/Post Build Override
+      run: |
+        echo '<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003"><Target Name="PostBuildEvent"/><Target Name="PreBuildEvent" /></Project>' > SupressBuildEvents.csproj
     
     - uses: actions/checkout@v3
       with: 
@@ -37,7 +41,7 @@ jobs:
       
     - name: Build
       working-directory: ./macro-deck
-      run: dotnet build --no-restore -property:EnableWindowsTargeting=true -property:SignAssembly=false -property:PostBuild= -property:PreBuild=
+      run: dotnet build --no-restore -property:EnableWindowsTargeting=true -property:SignAssembly=false -property:CustomAfterMicrosoftCommonTargets=../SupressBuildEvents.proj
   
     - name: Test
       working-directory: ./macro-deck
@@ -62,7 +66,7 @@ jobs:
     
     - name: Build
       working-directory: ./plugin
-      run: dotnet build --no-restore /p:EnableWindowsTargeting=true
+      run: dotnet build --no-restore /p:EnableWindowsTargeting=true -property:CustomAfterMicrosoftCommonTargets=../SupressBuildEvents.proj
     
     - name: Test
       working-directory: ./plugin
