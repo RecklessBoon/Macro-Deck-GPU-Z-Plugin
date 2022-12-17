@@ -50,7 +50,7 @@ jobs:
       
     - name: Build
       working-directory: ./macro-deck
-      run: dotnet build --no-restore -property:EnableWindowsTargeting=true -property:SignAssembly=false
+      run: dotnet build -c Release --no-restore -property:EnableWindowsTargeting=true -property:SignAssembly=false
   
     - name: Test
       working-directory: ./macro-deck
