@@ -30,7 +30,7 @@ jobs:
     - name: Enable Windows Targeting
       uses: Mudlet/xmlstarlet-action@2459d21dc77b093ef78e3c3f8bfd256e2c2c2b73
       with:
-        args: ed -P --delete //Project/Target[name="PostBuild"] --delete //Project/Target[name="PreBuild"] ./macro-deck/*.csproj
+        args: ed -P --delete //Project/Target[@Name="PostBuild"] --delete //Project/Target[@Name="PreBuild"] ./macro-deck/*.csproj
         
     - name: Remove COM Reference
       working-directory: ./macro-deck
