@@ -30,7 +30,7 @@ jobs:
     - name: Remove Pre/Post Build Targets
       uses: Mudlet/xmlstarlet-action@master
       with:
-        args: ed -P --delete '//Target[@Name="PreBuild"]' --delete '//Target[@Name="PostBuild"]' ./macro-deck/*.csproj
+        args: ed -P -L --delete '//Target[@Name="PreBuild"]' --delete '//Target[@Name="PostBuild"]' ./macro-deck/*.csproj
         
     - name: Remove COM Reference
       working-directory: ./macro-deck
