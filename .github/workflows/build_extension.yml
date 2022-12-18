@@ -36,10 +36,6 @@ jobs:
         xmlstarlet ed -P -L --delete '//Target[@Name="PreBuild"]' *.csproj
         xmlstarlet ed -P -L --delete '//Target[@Name="PostBuild"]' *.csproj
         
-    - name: Check CSPROJ
-      working-directory: ./macro-deck
-      run: cat *.csproj
-        
     - name: Remove COM Reference
       working-directory: ./macro-deck
       run: dotnet remove reference NetFwTypeLib
@@ -48,13 +44,9 @@ jobs:
       working-directory: ./macro-deck
       run: dotnet restore -property:EnableWindowsTargeting=true
       
-    - name: Build
+    - name: Build Macro Deck
       working-directory: ./macro-deck
       run: dotnet build -c Release --no-restore -property:EnableWindowsTargeting=true -property:SignAssembly=false
-  
-    - name: Test
-      working-directory: ./macro-deck
-      run: dotnet test --no-build --verbosity normal
       
     - uses: actions/checkout@v3
       with: 
@@ -75,9 +67,9 @@ jobs:
       working-directory: ./plugin
       run: dotnet restore /p:EnableWindowsTargeting=true
     
-    - name: Build
+    - name: Build Plugin
       working-directory: ./plugin
-      run: dotnet build --no-restore /p:EnableWindowsTargeting=true
+      run: dotnet build -c Release --no-restore /p:EnableWindowsTargeting=true
       
     - name: Test
       working-directory: ./plugin
@@ -85,7 +77,7 @@ jobs:
       
     - uses: papeloto/action-zip@v1
       with:
-        files: ./plugin/bin/Release/netcoreapp3.1 Plugin.xml Icon.png README.md LICENSE
+        files: ./plugin/bin/Release/win-x64/netcoreapp3.1 Plugin.xml Icon.png README.md LICENSE
         dest: RecklessBoon.MacroDeck.GPUZ.zip
 
     - name: Upload a Build Artifact
