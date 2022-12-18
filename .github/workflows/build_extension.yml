@@ -75,15 +75,20 @@ jobs:
       working-directory: ./plugin
       run: dotnet test --no-build --verbosity normal
       
-    - uses: papeloto/action-zip@v1
-      with:
-        files: ./plugin/bin/Release/netcoreapp3.1 ./plugin/Plugin.xml ./plugin/Icon.png ./plugin/README.md ./plugin/LICENSE
-        dest: RecklessBoon.MacroDeck.GPUZ.zip
+    - name: Package Distributables
+      run: |
+        mkdir dist
+        cp ./plugin/bin/Release/netcoreapp3.1/* ./dist
+        cp ./plugin/Plugin.xml ./dist
+        cp ./plugin/Icon.png ./dist
+        cp ./plugin/README.md ./dist
+        cp ./plugin/LICENSE ./dist
 
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v3.1.1
       with:
         # A file, directory or wildcard pattern that describes what to upload
         path: RecklessBoon.MacroDeck.GPUZ.zip
+        name: RecklessBoon.MacroDeck.GPUZ
         error: Files not found
         if-no-files-found: error
