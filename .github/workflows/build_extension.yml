@@ -83,19 +83,13 @@ jobs:
       working-directory: ./plugin
       run: dotnet test --no-build --verbosity normal
       
-  zip-files:
-    needs: build
+    - uses: papeloto/action-zip@v1
+      with:
+        files: ./plugin/bin/Release/netcoreapp3.1 Plugin.xml Icon.png README.md LICENSE
+        dest: RecklessBoon.MacroDeck.GPUZ.zip
 
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-      - uses: papeloto/action-zip@v1
-        with:
-          files: bin/Release/netcoreapp3.1 Plugin.xml Icon.png README.md LICENSE
-          dest: RecklessBoon.MacroDeck.GPUZ.zip
-      - name: Upload a Build Artifact
-        uses: actions/upload-artifact@v3.1.1
-        with:
-          # A file, directory or wildcard pattern that describes what to upload
-          path: RecklessBoon.MacroDeck.GPUZ.zip
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v3.1.1
+      with:
+        # A file, directory or wildcard pattern that describes what to upload
+        path: RecklessBoon.MacroDeck.GPUZ.zip
