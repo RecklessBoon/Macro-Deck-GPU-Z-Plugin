@@ -77,7 +77,7 @@ jobs:
       
     - uses: papeloto/action-zip@v1
       with:
-        files: ./plugin/bin/Release/win-x64/netcoreapp3.1 Plugin.xml Icon.png README.md LICENSE
+        files: ./plugin/bin/Release/netcoreapp3.1 ./plugin/Plugin.xml ./plugin/Icon.png ./plugin/README.md ./plugin/LICENSE
         dest: RecklessBoon.MacroDeck.GPUZ.zip
 
     - name: Upload a Build Artifact
@@ -85,3 +85,5 @@ jobs:
       with:
         # A file, directory or wildcard pattern that describes what to upload
         path: RecklessBoon.MacroDeck.GPUZ.zip
+        error: Files not found
+        if-no-files-found: error
