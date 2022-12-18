@@ -79,10 +79,10 @@ jobs:
       run: |
         mkdir dist
         cp ./plugin/bin/Release/netcoreapp3.1/* ./dist
-        cp ./plugin/Plugin.xml ./dist
-        cp ./plugin/Icon.png ./dist
-        cp ./plugin/README.md ./dist
-        cp ./plugin/LICENSE ./dist
+        cp ./plugin/ExtensionManifest.json ./dist
+        cp ./plugin/ExtensionIcon.png ./dist
+        cp ./plugin/README.md ./dist 2>/dev/null || true
+        cp ./plugin/LICENSE ./dist 2>/dev/null || true
 
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v3.1.1
