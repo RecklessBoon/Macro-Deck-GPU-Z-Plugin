@@ -15,3 +15,5 @@ jobs:
     steps:
     - name: Build Extension
       uses: RecklessBoon/Macro-Deck-Extension-Build-Action@main
+      with:
+        upsert-release: true
